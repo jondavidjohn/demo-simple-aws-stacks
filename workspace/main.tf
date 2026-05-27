@@ -56,7 +56,7 @@ resource "aws_s3_object" "index" {
       </head>
       <body>
         <h1>It works.</h1>
-        <p>This page was deployed by Terraform.</p>
+        <p>This page was deployed by Terraform STACKS.</p>
       </body>
     </html>
   HTML

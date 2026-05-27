@@ -8,7 +8,6 @@ store "varset" "creds" {
 }
 
 deployment "example_eu_central" {
-  migrate = true
   inputs = {
     region         = "eu-central-1"
     tags           = { environment = "production" }
@@ -18,7 +17,6 @@ deployment "example_eu_central" {
 }
 
 deployment "example_us_east" {
-  migrate = true
   inputs = {
     region         = "us-east-1"
     tags           = { environment = "production" }
@@ -28,7 +26,6 @@ deployment "example_us_east" {
 }
 
 deployment "example_us_west" {
-  migrate = true
   inputs = {
     region         = "us-west-1"
     tags           = { environment = "production" }
