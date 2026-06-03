@@ -68,3 +68,27 @@ component "site" {
     time   = provider.time.this
   }
 }
+
+component "cdn" {
+  source = "./cdn"
+
+  inputs = {
+    website_endpoint = component.site.website_endpoint
+    bucket_name      = component.site.bucket_name
+    tags             = var.tags
+  }
+
+  providers = {
+    aws = provider.aws.this
+  }
+}
+
+output "website_url" {
+  description = "Public HTTP URL of the static site for this deployment."
+  value       = component.site.website_url
+}
+
+output "cdn_url" {
+  description = "HTTPS CloudFront URL for this deployment."
+  value       = component.cdn.cdn_url
+}
