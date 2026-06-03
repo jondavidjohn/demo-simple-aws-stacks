@@ -1,30 +1,28 @@
-# Simple AWS Terraform: Static Website
+# Simple AWS Terraform: Static Website Component
 
-This deploys a minimal static website using S3 website hosting.
+This is an HCP Terraform Stacks **component** that deploys a minimal static website using S3 website hosting.
 
 ## Files
 
-- `versions.tf`: Terraform + providers, AWS provider uses `var.region`
-- `variables.tf`: input variables
-- `main.tf`: bucket, website config, public-read policy, sample `index.html`
-- `outputs.tf`: website URL and bucket outputs
-- `terraform.tfvars.example`: sample variable values
+- `versions.tf`: Terraform + provider requirements
+- `variables.tf`: component input variables
+- `main.tf`: S3 bucket, website config, public-read policy, sample `index.html`
+- `outputs.tf`: website URL and bucket name outputs
 
-## Region via tfvars
+## Inputs
 
-Copy and edit:
+| Variable | Type | Description |
+|---|---|---|
+| `region` | `string` | AWS region to deploy to |
+| `tags` | `map(string)` | Tags applied to all resources |
+| `project_name` | `string` | Prefix for the S3 bucket name (default: `"site"`) |
+| `force_destroy` | `bool` | Allow bucket deletion when non-empty (default: `true`) |
 
-```bash
-cp terraform.tfvars.example terraform.tfvars
-```
+## OIDC / AWS Authentication
 
-Set `region` to any AWS region you want.
+AWS credentials are provided by the **stack**, not this component. The stack configures an AWS provider with `assume_role_with_web_identity` using:
 
-## HCP Terraform Workload Identity OIDC
+- `role_arn` — sourced from a variable set (see the [stack-level README](../README.md))
+- `identity_token` — a short-lived OIDC JWT issued per stack run by HCP Terraform
 
-In your HCP Terraform workspace, set environment variables:
-
-- `TFC_AWS_PROVIDER_AUTH=true`
-- `TFC_AWS_RUN_ROLE_ARN=arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>`
-
-Then run from HCP Terraform as normal (`plan`/`apply`). No static AWS keys are required.
+No static AWS credentials or workspace environment variables are needed.

@@ -17,7 +17,4 @@ terraform {
   }
 }
 
-# In HCP Terraform, AWS credentials come from workload identity OIDC.
-# Set workspace env vars such as:
-# - TFC_AWS_PROVIDER_AUTH=true
-# - TFC_AWS_RUN_ROLE_ARN=arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>
+
