@@ -52,8 +52,8 @@ variable "identity_token" {
   ephemeral = true
 }
 
-component "workspace" {
-  source = "./workspace"
+component "site" {
+  source = "./site"
 
   inputs = {
     region         = var.region
