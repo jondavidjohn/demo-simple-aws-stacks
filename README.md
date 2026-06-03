@@ -5,9 +5,10 @@ This directory contains an [HCP Terraform Stack](https://developer.hashicorp.com
 ## Structure
 
 ```
-components.tfcomponent.hcl   # Component definition + AWS provider with OIDC
-deployments.tfdeploy.hcl     # Deployment instances (one per region)
-site/                        # Terraform module (the component source)
+components.tfcomponent.hcl   # Component definitions + AWS provider with OIDC
+deployments.tfdeploy.hcl     # Deployment instances (one per region) + published outputs
+site/                        # Terraform module: S3 static website (component source)
+cdn/                         # Terraform module: CloudFront distribution (component source)
 ```
 
 ## Prerequisites
@@ -51,6 +52,25 @@ The `aws_role_arn` value is read from this varset and passed into each deploymen
 
 Add or remove `deployment` blocks to control which regions are provisioned.
 
-## Component
+## Components
 
-See [`site/README.md`](./site/README.md) for details on the component's inputs and resources.
+Each deployment wires together two components:
+
+- **`site`** — provisions an S3 bucket configured for static website hosting and serves a demo `index.html` over HTTP.
+- **`cdn`** — provisions a CloudFront distribution in front of the `site` S3 website endpoint, adding a CDN and HTTPS (via the default CloudFront certificate). It consumes `website_endpoint` and `bucket_name` from the `site` component.
+
+See [`site/README.md`](./site/README.md) for details on the `site` component's inputs and resources.
+
+> **Note:** CloudFront distributions can take 5–15 minutes to fully deploy and propagate to edge locations.
+
+## Published Outputs
+
+`deployments.tfdeploy.hcl` republishes each deployment's CloudFront URL as a stack-level output:
+
+| Output | Description |
+|---|---|
+| `eu_central_cdn_url` | HTTPS CloudFront URL for the site in `eu-central-1` |
+| `us_east_cdn_url` | HTTPS CloudFront URL for the site in `us-east-1` |
+| `us_west_cdn_url` | HTTPS CloudFront URL for the site in `us-west-1` |
+
+The value chain flows: `cdn/outputs.tf` → `component.cdn.cdn_url` in `components.tfcomponent.hcl` → stack `output "cdn_url"` → `deployment.<name>.cdn_url` → `publish_output` in `deployments.tfdeploy.hcl`. Each component also exposes a `website_url` output for the direct (HTTP) S3 endpoint if you need it.
