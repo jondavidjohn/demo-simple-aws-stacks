@@ -21,6 +21,8 @@ Create an IAM role that trusts the HCP Terraform OIDC provider. The role's trust
 
 Attach whatever IAM permissions the stack needs (e.g. `AmazonS3FullAccess` for this demo).
 
+(I've found it helpful to have an LLM assist with this once you have `awscli` set up and configured.)
+
 ### 2. HCP Terraform Variable Set
 
 Create a **variable set** in HCP Terraform (organization-scoped or project-scoped) with the following Terraform variable:
